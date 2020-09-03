@@ -15,11 +15,13 @@ import java.util.List;
 public class AsyncTRMsgBox extends AsyncTask<List<TR_ApiModel_Result>, String, List<String>> {
 
     Location location;
-    List<TR_ApiModel_Result> result;
+    int range;
 
 
-    public AsyncTRMsgBox(Location loc){
+
+    public AsyncTRMsgBox(Location loc,int ran){
         this.location=loc;
+        this.range=ran*1000;
     }
 
 
@@ -52,7 +54,7 @@ public class AsyncTRMsgBox extends AsyncTask<List<TR_ApiModel_Result>, String, L
 
                float distance = locationA.distanceTo(location);
 
-               if (distance<300000){
+               if (distance<range){
                    toPost.add(weekData.get(i).getTitle());
                    toPost.add(" Time :"+weekData.get(i).getDate());
                    toPost.add(" magnitude : "+weekData.get(i).getMag().toString());

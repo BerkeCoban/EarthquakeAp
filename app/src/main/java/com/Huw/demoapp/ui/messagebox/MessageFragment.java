@@ -28,6 +28,8 @@ import com.baoyz.swipemenulistview.SwipeMenu;
 import com.baoyz.swipemenulistview.SwipeMenuCreator;
 import com.baoyz.swipemenulistview.SwipeMenuItem;
 import com.baoyz.swipemenulistview.SwipeMenuListView;
+import com.huawei.hms.ads.AdParam;
+import com.huawei.hms.ads.banner.BannerView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,7 +40,6 @@ public class MessageFragment extends Fragment {
 
 
 
-    UrlGenerator urlGenerator=new UrlGenerator();
     public  static List<String> msgData;
     ArrayList<items> msg =new ArrayList<>();
 
@@ -52,8 +53,7 @@ public class MessageFragment extends Fragment {
 
 
 
-
-   if (msgData!=null) {
+   if (msgData.size()>0) {
 
 
          //check async task for here

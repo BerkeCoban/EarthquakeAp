@@ -12,6 +12,7 @@
 #   public *;
 #}
 
+
 # Uncomment this to preserve the line number information for
 # debugging stack traces.
 #-keepattributes SourceFile,LineNumberTable
@@ -19,3 +20,18 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+
+
+
+
+
+
+
+# -keep class com.huawei.agconnect.remoteconfig.*{*;}
+# -keepclassmembers class **{
+ #   public <init>(android.content.Context,com.huawei.agconnect.AGConnectInstance);
+#}
+#-keepclassmembers class com.huawei.agconnect.remoteconfig.internal.server.**{*;}
+#-keep class * implements android.os.Parcelable {
+#  public static final android.os.Parcelable$Creator *;
+#}

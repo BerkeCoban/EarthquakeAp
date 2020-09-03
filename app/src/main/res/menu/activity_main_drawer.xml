@@ -14,11 +14,11 @@
             android:title="Graph" />
         <item
             android:id="@+id/nav_slideshow"
-            android:icon="@drawable/ic_baseline_notifications_active"
-            android:title="Send Push" />
+            android:icon="@drawable/ic_place"
+            android:title="Set Location" />
         <item
             android:id="@+id/nav_msg"
-            android:icon="@drawable/ic_baseline_notifications_active"
+            android:icon="@drawable/ic_mail"
             android:title="Message Box" />
 
     </group>

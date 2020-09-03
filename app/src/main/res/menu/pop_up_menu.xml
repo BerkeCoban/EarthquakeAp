@@ -1,14 +1,15 @@
-<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android" >
 
     <item
         android:id="@+id/itemshare"
         android:orderInCategory="100"
-        android:showAsAction="always"
-        android:title="Share"/>
+        android:title="Share"
+        app:showAsAction="always" />
     <item
         android:id="@+id/itempremove"
         android:orderInCategory="100"
-        android:showAsAction="always"
-        android:title="Remove"/>
+        android:title="Remove"
+        app:showAsAction="always" />
 
 </menu>

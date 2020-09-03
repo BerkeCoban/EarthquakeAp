@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.ListActivity;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.util.Log;
 
@@ -12,6 +13,8 @@ import com.Huw.demoapp.Api_Models.ApiInterface;
 import com.Huw.demoapp.Api_Models.TR_ApiModel;
 import com.Huw.demoapp.Api_Models.TR_ApiModel_Result;
 import com.Huw.demoapp.Util.UrlGenerator;
+import com.Huw.demoapp.setLocationActivity;
+import com.Huw.demoapp.ui.gallery.GalleryFragment;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -37,29 +40,29 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class AsyncTRgetLastWeek extends AsyncTask<ArrayList<String>, String, List<TR_ApiModel>> {
 
-Context c;
 
 
 
-
-
-
-     Retrofit.Builder builder = new Retrofit.Builder()
+    Retrofit.Builder builder = new Retrofit.Builder()
             .baseUrl(ApiInterface.URL_GET)
-            .client(getUnsafeOkHttpClient().build())
+            .client(new OkHttpClient())
             .addConverterFactory(GsonConverterFactory.create());
 
     Retrofit retrofit = builder.build();
     ApiInterface init = retrofit.create(ApiInterface.class);
 
-
-
-
-     ArrayList<String> days=new ArrayList<>();
-
     UrlGenerator urlGenerator = new UrlGenerator();
-     TR_ApiModel myTrData;
-     List<TR_ApiModel> toPost;
+    AccountActivity accountActivity=new AccountActivity();
+    Context con;
+
+
+
+
+
+   public AsyncTRgetLastWeek(Context context){
+       this.con=context;
+   }
+
 
 
 
@@ -105,8 +108,19 @@ Context c;
      @Override
      protected void onPostExecute(List<TR_ApiModel> tr_apiModels) {
          super.onPostExecute(tr_apiModels);
-        AccountActivity.weekdata=tr_apiModels;
-       // accountActivity.tryLogIn();
+        GalleryFragment.trdata=tr_apiModels;
+
+         accountActivity.context=con;
+        accountActivity.login(con);
+
+
+
+
+
+        //Intent intent = new Intent (con, setLocationActivity.class);
+        // con.startActivity(intent);
+
+
 
 
 
@@ -122,53 +136,6 @@ Context c;
 
   return aa.body();
      }
-
-
-
-
-
-    public static OkHttpClient.Builder getUnsafeOkHttpClient() {
-        try {
-
-            final TrustManager[] trustAllCerts = new TrustManager[]{
-                    new X509TrustManager() {
-                        @Override
-                        public void checkClientTrusted(java.security.cert.X509Certificate[] chain, String authType) {
-                        }
-
-                        @Override
-                        public void checkServerTrusted(java.security.cert.X509Certificate[] chain, String authType) {
-                        }
-
-                        @Override
-                        public java.security.cert.X509Certificate[] getAcceptedIssuers() {
-                            return new java.security.cert.X509Certificate[]{};
-                        }
-                    }
-
-            };
-
-            // Install the all-trusting trust manager
-            final SSLContext sslContext = SSLContext.getInstance("SSL");
-            sslContext.init(null, trustAllCerts, new java.security.SecureRandom());
-
-            // Create an ssl socket factory with our all-trusting manager
-            final SSLSocketFactory sslSocketFactory = sslContext.getSocketFactory();
-
-            OkHttpClient.Builder builder = new OkHttpClient.Builder();
-            builder.sslSocketFactory(sslSocketFactory, (X509TrustManager) trustAllCerts[0]);
-            builder.hostnameVerifier(new HostnameVerifier() {
-                @Override
-                public boolean verify(String hostname, SSLSession session) {
-                    return true;
-                }
-            });
-            return builder;
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
-
 
 
  }

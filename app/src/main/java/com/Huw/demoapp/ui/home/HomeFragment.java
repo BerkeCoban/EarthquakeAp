@@ -3,14 +3,18 @@ package com.Huw.demoapp.ui.home;
 import android.Manifest;
 import android.app.DatePickerDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.content.IntentSender;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+
 import android.graphics.BitmapFactory;
 import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Looper;
+import android.preference.PreferenceManager;
 import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -18,12 +22,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.DatePicker;
+import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.cardview.widget.CardView;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
@@ -35,13 +41,21 @@ import com.Huw.demoapp.Api_Models.ApiModel_Feature;
 import com.Huw.demoapp.Api_Models.TR_ApiModel;
 import com.Huw.demoapp.Api_Models.TR_ApiModel_Result;
 import com.Huw.demoapp.AsyncTasks.AsyncTRMsgBox;
+import com.Huw.demoapp.NavigationLeftActivity;
 import com.Huw.demoapp.R;
+import com.Huw.demoapp.Util.CustomInfoAdapter;
 import com.Huw.demoapp.Util.UrlGenerator;
+import com.Huw.demoapp.setLocationActivity;
 import com.huawei.agconnect.config.AGConnectServicesConfig;
+import com.huawei.agconnect.crash.AGConnectCrash;
 import com.huawei.hmf.tasks.OnFailureListener;
 import com.huawei.hmf.tasks.OnSuccessListener;
 import com.huawei.hms.aaid.HmsInstanceId;
+import com.huawei.hms.analytics.HiAnalytics;
+import com.huawei.hms.analytics.HiAnalyticsInstance;
+import com.huawei.hms.analytics.HiAnalyticsTools;
 import com.huawei.hms.common.ApiException;
+
 import com.huawei.hms.common.ResolvableApiException;
 import com.huawei.hms.location.FusedLocationProviderClient;
 import com.huawei.hms.location.LocationCallback;
@@ -58,6 +72,7 @@ import com.huawei.hms.maps.MapView;
 import com.huawei.hms.maps.OnMapReadyCallback;
 import com.huawei.hms.maps.model.BitmapDescriptorFactory;
 import com.huawei.hms.maps.model.LatLng;
+import com.huawei.hms.maps.model.Marker;
 import com.huawei.hms.maps.model.MarkerOptions;
 
 import java.text.ParseException;
@@ -81,6 +96,8 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
+import static android.content.Context.MODE_PRIVATE;
+
 public class HomeFragment extends Fragment implements OnMapReadyCallback {
 
     private HomeViewModel homeViewModel;
@@ -96,8 +113,12 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
     String startDate, endDate;
     UrlGenerator urlGenerator = new UrlGenerator();
 
+
+
+
     private int seekBarValue;
 
+    CustomInfoAdapter customInfoAdapter;
 
 
 
@@ -107,12 +128,8 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
 
 
 
-    private FusedLocationProviderClient fusedLocationProviderClient;
-    private LocationRequest mLocationRequest;
-    private SettingsClient settingsClient;
-    private LocationCallback mLocationCallback;
-    private Location location;
-    private int locationController=0;
+
+
 
 
 
@@ -126,8 +143,21 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
 
 
     public static boolean isFromMessage=false;
+
+
+
     public  static double lat;
     public  static double lon;
+
+    private FusedLocationProviderClient fusedLocationProviderClient;
+    private LocationRequest mLocationRequest;
+    private SettingsClient settingsClient;
+    private LocationCallback mLocationCallback;
+    private Location mylocation;
+    ViewGroup groupcontext;
+
+    HiAnalyticsInstance instance;
+
 
 
 
@@ -148,50 +178,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
             .client(getUnsafeOkHttpClient().build())
             .addConverterFactory(GsonConverterFactory.create());
 
-    private static OkHttpClient.Builder getUnsafeOkHttpClient() {
-        try {
 
-            final TrustManager[] trustAllCerts = new TrustManager[]{
-                    new X509TrustManager() {
-                        @Override
-                        public void checkClientTrusted(java.security.cert.X509Certificate[] chain, String authType) {
-                        }
-
-                        @Override
-                        public void checkServerTrusted(java.security.cert.X509Certificate[] chain, String authType) {
-                        }
-
-                        @Override
-                        public java.security.cert.X509Certificate[] getAcceptedIssuers() {
-                            return new java.security.cert.X509Certificate[]{};
-                        }
-                    }
-
-            };
-
-            // Install the all-trusting trust manager
-            final SSLContext sslContext = SSLContext.getInstance("SSL");
-            sslContext.init(null, trustAllCerts, new java.security.SecureRandom());
-
-            // Create an ssl socket factory with our all-trusting manager
-            final SSLSocketFactory sslSocketFactory = sslContext.getSocketFactory();
-
-            OkHttpClient.Builder builder = new OkHttpClient.Builder();
-            builder.sslSocketFactory(sslSocketFactory, (X509TrustManager) trustAllCerts[0]);
-            builder.hostnameVerifier(new HostnameVerifier() {
-                @Override
-                public boolean verify(String hostname, SSLSession session) {
-                    return true;
-                }
-            });
-            return builder;
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-
-
-
-    }
 
     Retrofit retrofit2 = builderpush.build();
 
@@ -208,15 +195,34 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
 
         mMapView = root.findViewById(R.id.mapp);
 
-        Location locationMan = new Location("point A");
-        locationMan.setLatitude(38.9148053);
-        locationMan.setLongitude(27.8285846);
+         groupcontext = container;
+
+       //  setLocation();
+       //  checkDeviceSettings();
+
+
+
+
 
 
 
         final Button search = (Button) root.findViewById(R.id.search);
         datetext = (TextView) root.findViewById(R.id.date);
          seekBar=(SeekBar) root.findViewById(R.id.seekbar);
+
+         HiAnalyticsTools.enableLog();
+         instance= HiAnalytics.getInstance(getActivity());
+
+         instance.setAnalyticsEnabled(true);
+
+
+
+        // instance.setAutoCollectionEnabled(true);
+        // instance.regHmsSvcEvent();
+
+
+
+
 
 
 
@@ -231,43 +237,10 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
 
 
 
-        askPermissions();
-
-
-
-        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(getActivity());
-        settingsClient = LocationServices.getSettingsClient(getActivity());
-        mLocationRequest = new LocationRequest();
-        mLocationRequest.setInterval(1000).setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-
-        mLocationCallback = new LocationCallback() {
-            @Override
-            public void onLocationResult(LocationResult locationResult) {
-                if (locationResult != null) {
-
-                    location = locationResult.getLastLocation();
-
-                    if (locationController==0){
-                        setMessageBox(location);
-                    }
 
 
 
 
-
-
-
-
-                }
-            }
-        };
-
-
-
-
-
-        checkDeviceSettings();
-        setMessageBox(locationMan);
 
 
         Bundle mapViewBundle = null;
@@ -284,7 +257,12 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
 
                 updateMapWithDate(api_date, startDate, endDate);
 
-               // notifyMe();
+                Bundle bundle=new Bundle();
+                bundle.putString("date",api_date);
+                instance.onEvent("dates",bundle);
+
+
+
             }
         });
 
@@ -411,38 +389,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
         return root;
     }
 
-    private void setMessageBox(final Location loc) {
 
-
-
-            try {
-                new Thread() {
-                    @Override
-                    public void run() {
-
-
-
-                        AsyncTRMsgBox taskmsg = new AsyncTRMsgBox(loc);
-
-
-                        List<TR_ApiModel_Result> aa = (List<TR_ApiModel_Result>) AccountActivity.weekdata.get(6).getResult();
-
-                        taskmsg.execute(aa);
-
-
-                    }
-                }.start();
-            } catch (Error e) {
-
-                Toast.makeText(getActivity(), e.toString(), Toast.LENGTH_LONG).show();
-            }
-
-            locationController++;
-            // NavigationLeftActivity.msg_location=location;
-
-
-
-        }
 
 
     @Override
@@ -495,6 +442,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
 
 
 
+
         callist.enqueue(new Callback<TR_ApiModel>() {
             @Override
             public void onResponse(Call<TR_ApiModel> call, Response<TR_ApiModel> response) {
@@ -503,6 +451,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
                 TR_ApiModel myTrData=response.body();
                 hMap.clear();
                 hMap.setMarkersClustering(true);
+               // hMap.setMyLocationEnabled(true);
                 List<TR_ApiModel_Result> markerData = myTrData.getResult();
 
                 Bitmap icon1 = BitmapFactory.decodeResource(getActivity().getResources(),
@@ -513,17 +462,41 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
 
                 for (TR_ApiModel_Result x : markerData) {
 
+                    MarkerOptions options=new MarkerOptions();
+                    options.title("Magnitude : "+x.getMag().toString());
+                    options.snippet(" Time : " +x.getDate().substring(10));
+                    options.position(new LatLng(x.getLat(),x.getLng()));
+                    options.draggable(false);
+                    options.clusterable(true);
+
+
+
+
                     if (x.getMag()>=seekBarValue) {
 
                         if (x.getMag()<4){
-                            hMap.addMarker(new MarkerOptions().position(new LatLng(x.getLat(), x.getLng())).title(x.getTitle()+" Magnitude : "+x.getMag().toString()).draggable(false).clusterable(true).icon(BitmapDescriptorFactory.fromBitmap(icon2)));
+                            hMap.addMarker(options).setIcon(BitmapDescriptorFactory.fromBitmap(icon2));
+                            //  hMap.addMarker(new MarkerOptions().position(new LatLng(x.getLat(), x.getLng())).snippet(x.getTitle()).title(" Magnitude : " + x.getMag().toString()).draggable(false).clusterable(true).icon(BitmapDescriptorFactory.fromBitmap(icon2)));
                         }
                         else  if (x.getMag()>=4) {
-                            hMap.addMarker(new MarkerOptions().position(new LatLng(x.getLat(), x.getLng())).title(x.getTitle() + " Magnitude : " + x.getMag().toString()).draggable(false).clusterable(true).icon(BitmapDescriptorFactory.fromBitmap(icon1)));
+                            hMap.addMarker(options).setIcon(BitmapDescriptorFactory.fromBitmap(icon1));
+                            //   hMap.addMarker(new MarkerOptions().position(new LatLng(x.getLat(), x.getLng())).snippet(x.getTitle()).title(" Magnitude : " + x.getMag().toString()).draggable(false).clusterable(true).icon(BitmapDescriptorFactory.fromBitmap(icon1)));
                         }
 
                     }
                     }
+
+                hMap.setOnMarkerClickListener(new HuaweiMap.OnMarkerClickListener() {
+                    @Override
+                    public boolean onMarkerClick(Marker marker) {
+
+
+                        CustomInfoAdapter customInfoAdapter=new CustomInfoAdapter(groupcontext,getActivity());
+                        hMap.setInfoWindowAdapter(customInfoAdapter);
+
+                        return false;
+                    }
+                });
 
             }
 
@@ -540,7 +513,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
 
 
 
-    public void worldApi(String startDate,String endDate, String minMag){
+    public void worldApi(String startDate,String endDate, int minMag){
 
         Call<ApiModel> callis = sendPush.getDynamic("https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&starttime="+startDate+"&endtime="+endDate+"&minmagnitude="+minMag);
         callis.enqueue(new Callback<ApiModel>() {
@@ -552,15 +525,50 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
                     ApiModel myData = response.body();
                     hMap.clear();
                     hMap.setMarkersClustering(true);
+                //    hMap.setMyLocationEnabled(true);
                     List<ApiModel_Feature> markerData =myData.getFeatures();
 
+                   Bitmap icon1 = BitmapFactory.decodeResource(getActivity().getResources(),
+                            R.drawable.icons8r);
+
+                    Bitmap icon2 = BitmapFactory.decodeResource(getActivity().getResources(),
+                            R.drawable.icons8y);
+
                     for (ApiModel_Feature x : markerData) {
+                        MarkerOptions options = new MarkerOptions();
+                        options.title("Magnitude : " + x.getProperties().getMag());
+                        options.snippet(" Time :"+ getDate(x.getProperties().getTime()).substring(10));
+                        options.position(new LatLng(x.getGeometry().getCoordinates().get(1), x.getGeometry().getCoordinates().get(0)));
+                        options.draggable(false);
+                        options.clusterable(true);
 
 
-                        hMap.addMarker(new MarkerOptions().position(new LatLng(x.getGeometry().getCoordinates().get(1), x.getGeometry().getCoordinates().get(0))).title(x.getProperties().getMag().toString()).draggable(false));
+                        //  hMap.addMarker(new MarkerOptions().position(new LatLng(x.getGeometry().getCoordinates().get(1), x.getGeometry().getCoordinates().get(0))).title(x.getProperties().getTitle()).draggable(false).clusterable(true)
+                        //         .icon(BitmapDescriptorFactory.fromBitmap(icon1)));
+
+                        if (x.getProperties().getMag() >= seekBarValue) {
+                            if (x.getProperties().getMag() < 4) {
+                                hMap.addMarker(options).setIcon(BitmapDescriptorFactory.fromBitmap(icon2));
+
+                            } else if (x.getProperties().getMag() >= 4) {
+                                hMap.addMarker(options).setIcon(BitmapDescriptorFactory.fromBitmap(icon1));
+
+                            }
+
+                            //    hMap.addMarker(new MarkerOptions().position(new LatLng(x.getGeometry().getCoordinates().get(1), x.getGeometry().getCoordinates().get(0))).title(x.getProperties().getTitle()).draggable(false).icon(BitmapDescriptorFactory.fromBitmap(icon1)));
+                        }
                     }
+                    hMap.setOnMarkerClickListener(new HuaweiMap.OnMarkerClickListener() {
+                        @Override
+                        public boolean onMarkerClick(Marker marker) {
 
 
+                            CustomInfoAdapter customInfoAdapter=new CustomInfoAdapter(groupcontext,getActivity());
+                            hMap.setInfoWindowAdapter(customInfoAdapter);
+
+                            return false;
+                        }
+                    });
 
 
                 }else{
@@ -585,7 +593,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
 
         if (AccountActivity.mapValue == 0) {
 
-            worldApi(startDate,endDate,"4");
+            worldApi(startDate,endDate,seekBarValue);
 
 
 
@@ -628,9 +636,66 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
 
     }
 
+
+
     private void checkDeviceSettings() {
+
+        try {
+            LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder();
+            builder.addLocationRequest(mLocationRequest);
+            LocationSettingsRequest locationSettingsRequest = builder.build();
+            // check devices settings before request location updates.
+            settingsClient.checkLocationSettings(locationSettingsRequest)
+                    .addOnSuccessListener(new OnSuccessListener<LocationSettingsResponse>() {
+                        @Override
+                        public void onSuccess(LocationSettingsResponse locationSettingsResponse) {
+                            Log.i("22", "check location settings success");
+                            //request location updates
+                            fusedLocationProviderClient.requestLocationUpdates(mLocationRequest, mLocationCallback, Looper.getMainLooper()).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void aVoid) {
+                                    Log.i("22", "requestLocationUpdatesWithCallback onSuccess");
+                                }
+                            })
+                                    .addOnFailureListener(new OnFailureListener() {
+                                        @Override
+                                        public void onFailure(Exception e) {
+                                            Log.e("11",
+                                                    "requestLocationUpdatesWithCallback onFailure:" + e.getMessage());
+                                        }
+                                    });
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(Exception e) {
+                            Log.e("22", "checkLocationSetting onFailure:" + e.getMessage());
+                            int statusCode = ((ApiException) e).getStatusCode();
+                            switch (statusCode) {
+                                case LocationSettingsStatusCodes.RESOLUTION_REQUIRED:
+                                    try {
+                                        ResolvableApiException rae = (ResolvableApiException) e;
+                                        rae.startResolutionForResult(getActivity(), 0);
+                                    } catch (IntentSender.SendIntentException sie) {
+                                        Log.e("11", "PendingIntent unable to execute request.");
+                                    }
+                                    break;
+                            }
+                        }
+                    });
+        } catch (Exception e) {
+            Log.e("11", "requestLocationUpdatesWithCallback exception:" + e.getMessage());
+        }
+
+
+
+
+
+
+
+      /*
         LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder();
-        mLocationRequest = new LocationRequest();
+      //  mLocationRequest = new LocationRequest();
         builder.addLocationRequest(mLocationRequest);
         LocationSettingsRequest locationSettingsRequest = builder.build();
 // Check the device location settings.
@@ -667,37 +732,30 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
                         }
                     }
                 });
-
+*/
 
     }
 
 
 
-    private  void askPermissions(){
-        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.N) {
-            Log.i("23", "sdk < 28");
-            if (ActivityCompat.checkSelfPermission(getActivity(),
-                    Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
-                    || ActivityCompat.checkSelfPermission(getActivity(),
-                    Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                String[] strings =
-                        {Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION};
-                ActivityCompat.requestPermissions(getActivity(), strings, 1);
+
+    private void setLocation() {
+        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(getActivity());
+        settingsClient = LocationServices.getSettingsClient(getActivity());
+        mLocationRequest = new LocationRequest();
+        mLocationRequest.setInterval(2000).setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+
+        mLocationCallback = new LocationCallback() {
+            @Override
+            public void onLocationResult(LocationResult locationResult) {
+                if (locationResult != null) {
+
+                    mylocation = locationResult.getLastLocation();
+                }
             }
-        } else {
-            if (ActivityCompat.checkSelfPermission(getActivity(),
-                    Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
-                    || ActivityCompat.checkSelfPermission(getActivity(),
-                    Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED
-                    || ActivityCompat.checkSelfPermission(getActivity(),
-                    "android.permission.ACCESS_BACKGROUND_LOCATION") != PackageManager.PERMISSION_GRANTED) {
-                String[] strings = {android.Manifest.permission.ACCESS_FINE_LOCATION,
-                        android.Manifest.permission.ACCESS_COARSE_LOCATION,
-                        "android.permission.ACCESS_BACKGROUND_LOCATION"};
-                ActivityCompat.requestPermissions(getActivity(), strings, 2);
-            }
-        }
+        };
     }
+
 
 
 
@@ -705,7 +763,10 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
     public void onMapReady(HuaweiMap huaweiMap) {
 
         hMap = huaweiMap;
-        hMap.setMapType(1);
+
+        //hMap.setMapType(1);
+     //   hMap.setMyLocationEnabled(true);
+
 
 
 
@@ -714,13 +775,16 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
 
         Bitmap icon2 = BitmapFactory.decodeResource(getActivity().getResources(),
                 R.drawable.icons8y);
+      //  customInfoAdapter = new CustomInfoAdapter(getActivity());
 
 
-        if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+        //if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
 
-            // return;
-        }
-        hMap.setMyLocationEnabled(true);
+   //         hMap.setMyLocationEnabled(true);
+   //     }else{
+  //          hMap.setMyLocationEnabled(true);
+  //      }
+
 
 if (isFromMessage==false){
     hMap.setMarkersClustering(true);
@@ -728,30 +792,94 @@ if (isFromMessage==false){
         if (AccountActivity.mapValue == 0) {
             List<ApiModel_Feature> markerData = AccountActivity.myData.getFeatures();
 
+
+
             for (ApiModel_Feature x : markerData) {
 
-                hMap.addMarker(new MarkerOptions().position(new LatLng(x.getGeometry().getCoordinates().get(1), x.getGeometry().getCoordinates().get(0))).title(x.getProperties().getMag().toString()).draggable(false).clusterable(true).icon(BitmapDescriptorFactory.fromBitmap(icon1)));
+                MarkerOptions options=new MarkerOptions();
+                options.title("Magnitude : "+x.getProperties().getMag());
+                options.snippet(" Time :"+getDate(x.getProperties().getTime()).substring(10));
+                options.position(new LatLng(x.getGeometry().getCoordinates().get(1),x.getGeometry().getCoordinates().get(0)));
+                options.draggable(false);
+                options.clusterable(true);
+
+
+              //  hMap.addMarker(new MarkerOptions().position(new LatLng(x.getGeometry().getCoordinates().get(1), x.getGeometry().getCoordinates().get(0))).title(x.getProperties().getTitle()).draggable(false).clusterable(true)
+               //         .icon(BitmapDescriptorFactory.fromBitmap(icon1)));
+
+                if (x.getProperties().getMag()>=seekBarValue){
+                    if (x.getProperties().getMag() < 4) {
+                        hMap.addMarker(options).setIcon(BitmapDescriptorFactory.fromBitmap(icon2));
+
+                }else  if (x.getProperties().getMag()>=4){
+                        hMap.addMarker(options).setIcon(BitmapDescriptorFactory.fromBitmap(icon1));
+
+                    }
+                }
+
             }
+
+            hMap.setOnMarkerClickListener(new HuaweiMap.OnMarkerClickListener() {
+                @Override
+                public boolean onMarkerClick(Marker marker) {
+
+
+                    CustomInfoAdapter customInfoAdapter=new CustomInfoAdapter(groupcontext,getActivity());
+                    hMap.setInfoWindowAdapter(customInfoAdapter);
+
+                    return false;
+                }
+            });
+
 
 
         }
         if (AccountActivity.mapValue == 1) {
             List<TR_ApiModel_Result> markerData = AccountActivity.myTrData.getResult();
 
+
             for (TR_ApiModel_Result x : markerData) {
+
+          MarkerOptions options=new MarkerOptions();
+          options.title("Magnitude : "+x.getMag().toString());
+          options.snippet(" Time : " +x.getDate().substring(10));
+          options.position(new LatLng(x.getLat(),x.getLng()));
+          options.draggable(false);
+          options.clusterable(true);
+
+
 
                 if (x.getMag() >= seekBarValue) {
 
                     if (x.getMag() < 4) {
-                        hMap.addMarker(new MarkerOptions().position(new LatLng(x.getLat(), x.getLng())).title(x.getTitle() + " Magnitude : " + x.getMag().toString()).draggable(false).icon(BitmapDescriptorFactory.fromBitmap(icon2)).clusterable(true));
+
+                       //   hMap.addMarker(new MarkerOptions().position(new LatLng(x.getLat(), x.getLng())).snippet(x.getTitle()).title(" Magnitude : " + x.getMag().toString()).draggable(false).icon(BitmapDescriptorFactory.fromBitmap(icon2)).clusterable(true));
+                        hMap.addMarker(options).setIcon(BitmapDescriptorFactory.fromBitmap(icon2));
                     } else if (x.getMag() >= 4) {
-                        hMap.addMarker(new MarkerOptions().position(new LatLng(x.getLat(), x.getLng())).title(x.getTitle() + " Magnitude : " + x.getMag().toString()).draggable(false).icon(BitmapDescriptorFactory.fromBitmap(icon1)).clusterable(true));
+                        hMap.addMarker(options).setIcon(BitmapDescriptorFactory.fromBitmap(icon1));
+                       // hMap.addMarker(new MarkerOptions().position(new LatLng(x.getLat(), x.getLng())).snippet(x.getTitle()).title(" Magnitude : " + x.getMag().toString()).draggable(false).icon(BitmapDescriptorFactory.fromBitmap(icon1)).clusterable(true));
                     }
                 }
+
+
             }
 
-            //clusterable(true)
-            //  hMap.setMarkersClustering(true);
+
+
+
+
+            hMap.setOnMarkerClickListener(new HuaweiMap.OnMarkerClickListener() {
+                @Override
+                public boolean onMarkerClick(Marker marker) {
+
+
+                    CustomInfoAdapter customInfoAdapter=new CustomInfoAdapter(groupcontext,getActivity());
+                    hMap.setInfoWindowAdapter(customInfoAdapter);
+
+                    return false;
+                }
+            });
+
         }
     }
 
@@ -772,6 +900,10 @@ if (isFromMessage==false){
        isFromMessage=false;
 
    }
+
+
+
+
 
     }
 
@@ -804,7 +936,58 @@ if (isFromMessage==false){
         return pushToken;
     }
 
+    private String getDate(String time) {
 
+
+        SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd '  ' HH:mm:ss z");
+        Date date = new Date(Long.parseLong(time));
+        return sf.format(date);
+    }
+
+    private static OkHttpClient.Builder getUnsafeOkHttpClient() {
+        try {
+
+            final TrustManager[] trustAllCerts = new TrustManager[]{
+                    new X509TrustManager() {
+                        @Override
+                        public void checkClientTrusted(java.security.cert.X509Certificate[] chain, String authType) {
+                        }
+
+                        @Override
+                        public void checkServerTrusted(java.security.cert.X509Certificate[] chain, String authType) {
+                        }
+
+                        @Override
+                        public java.security.cert.X509Certificate[] getAcceptedIssuers() {
+                            return new java.security.cert.X509Certificate[]{};
+                        }
+                    }
+
+            };
+
+            // Install the all-trusting trust manager
+            final SSLContext sslContext = SSLContext.getInstance("SSL");
+            sslContext.init(null, trustAllCerts, new java.security.SecureRandom());
+
+            // Create an ssl socket factory with our all-trusting manager
+            final SSLSocketFactory sslSocketFactory = sslContext.getSocketFactory();
+
+            OkHttpClient.Builder builder = new OkHttpClient.Builder();
+            builder.sslSocketFactory(sslSocketFactory, (X509TrustManager) trustAllCerts[0]);
+            builder.hostnameVerifier(new HostnameVerifier() {
+                @Override
+                public boolean verify(String hostname, SSLSession session) {
+                    return true;
+                }
+            });
+            return builder;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
+
+
+    }
 
 
 

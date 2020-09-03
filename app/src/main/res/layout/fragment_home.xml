@@ -18,7 +18,7 @@
         map:uiZoomControls="true"
         map:cameraTargetLat="39.3799497"
         map:cameraTargetLng="34.0919603"
-        map:cameraZoom="4.8"
+        map:cameraZoom="4.5"
         android:layout_weight="0.3"
 
 

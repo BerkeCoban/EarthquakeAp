@@ -1,23 +1,19 @@
-package com.Huw.demoapp;
+package com.Huw.demoapp.ui.slideshow;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.ViewModel;
 
-public class ViewModel extends androidx.lifecycle.ViewModel {
+public class SlideshowViewModel extends ViewModel {
+
     private MutableLiveData<String> mText;
 
-    public ViewModel() {
+    public SlideshowViewModel() {
         mText = new MutableLiveData<>();
-        mText.setValue("No data");
+        mText.setValue("This is slideshow fragment");
     }
 
     public LiveData<String> getText() {
         return mText;
     }
-    public void setText( String a) {
-
-        mText.setValue(a);
-
-    }
-
 }

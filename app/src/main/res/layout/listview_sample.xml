@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+
     android:orientation="horizontal"
     android:weightSum="100" >
 
@@ -11,14 +12,15 @@
     <ImageView
         android:gravity="center"
         android:textAlignment="center"
-        android:layout_width="match_parent"
-        android:background="@drawable/ic_baseline_supervised_user_circle_24"
+        android:layout_width="100dp"
+
+        android:background="@drawable/ww2"
         android:layout_height="100dp"
         android:id="@+id/photoEarth"
-        android:layout_weight="75" />
+        android:layout_weight="70" />
 
     <LinearLayout
-        android:layout_weight="25"
+        android:layout_weight="30"
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">

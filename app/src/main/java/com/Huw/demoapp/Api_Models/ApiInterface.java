@@ -39,6 +39,7 @@ public interface ApiInterface {
      @GET
     Call<ApiModel> getDynamic(@Url String url);
 
+
     @FormUrlEncoded
     @Headers("Content-Type:application/x-www-form-urlencoded; charset=UTF-8")
     @POST("v3/token")
@@ -53,8 +54,6 @@ public interface ApiInterface {
     Call<NotificationMessage> createNotification(
             @Header("Authorization") String authorization,
             @Body  NotificationBody notificationbody);
-
-
 
 
 

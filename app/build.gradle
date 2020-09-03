@@ -1,6 +1,7 @@
 apply plugin: 'com.android.application'
 apply plugin: 'com.huawei.agconnect'
 
+
 android {
     compileSdkVersion 30
     buildToolsVersion "30.0.0"
@@ -15,11 +16,36 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
+
+    signingConfigs {
+        release {
+            storeFile file('DemoApp2.jks')
+            keyAlias 'key0'
+            keyPassword '147258pp'
+            storePassword '147258pp'
+            v1SigningEnabled true
+            v2SigningEnabled true
+        }
+    }
+
+
+
+
+
     buildTypes {
         release {
             minifyEnabled false
+          //  signingConfig signingConfigs.release
+            proguardFiles getDefaultProguardFile ('proguard-android.txt'),'proguard-rules.pro'
 
         }
+        debug {
+
+           // signingConfig signingConfigs.release
+            debuggable true
+
+        }
+
     }
 
 
@@ -52,11 +78,19 @@ dependencies {
     implementation 'com.android.support:appcompat-v7:30.0.0'
     implementation 'com.android.support:design:30.0.0'
 
-    implementation 'com.huawei.agconnect:agconnect-core:1.0.0.300'
 
-    implementation 'com.huawei.hms:maps:4.0.0.302'
-    implementation 'com.huawei.hms:location:4.0.3.301'
+   implementation 'com.huawei.agconnect:agconnect-core:1.4.0.300'
+   implementation 'com.huawei.agconnect:agconnect-remoteconfig:1.4.0.300'
+
+
+    implementation 'com.huawei.hms:maps:5.0.1.300'
     implementation 'com.huawei.hms:hwid:4.0.4.300'
+    implementation 'com.huawei.hms:ads-lite:13.4.30.307'
+    implementation 'com.huawei.hms:hianalytics:5.0.1.301'
+    implementation 'com.huawei.agconnect:agconnect-crash:1.4.0.300'
+
+
+    implementation 'com.huawei.hms:location:5.0.0.301'
     implementation 'com.huawei.hms:push:4.0.3.301'
 
 

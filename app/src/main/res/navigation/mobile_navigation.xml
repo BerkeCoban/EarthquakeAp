@@ -20,7 +20,7 @@
     <fragment
         android:id="@+id/nav_slideshow"
         android:name="com.Huw.demoapp.ui.slideshow.SlideshowFragment"
-        android:label="Push"
+        android:label="Set Location"
         tools:layout="@layout/fragment_slideshow" />
     <fragment
         android:id="@+id/nav_msg"

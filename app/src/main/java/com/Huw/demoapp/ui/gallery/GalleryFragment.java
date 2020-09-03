@@ -17,6 +17,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import com.Huw.demoapp.Api_Models.ApiModel;
 import com.Huw.demoapp.Api_Models.TR_ApiModel;
 import com.Huw.demoapp.BarChart.Data;
 import com.Huw.demoapp.ListView.listAdapter;
@@ -36,7 +37,9 @@ import com.github.mikephil.charting.utils.ColorTemplate;
 
 import org.xmlpull.v1.XmlPullParser;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class GalleryFragment extends Fragment {
@@ -46,10 +49,12 @@ public class GalleryFragment extends Fragment {
 
     ArrayList<BarEntry> barEntryArrayList;
     ArrayList<String> labelnames;
+
     ArrayList<Data> data = new ArrayList<>();
 
 
-    public  static List<TR_ApiModel> mydata;
+    public  static List<TR_ApiModel> trdata;
+    public  static List<ApiModel> worlddata;
     public  static List<String> days;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -122,205 +127,408 @@ public class GalleryFragment extends Fragment {
                 int d= (int) x;
 
 
-                if (d==0){
-                    List<String> bb=new ArrayList<>();
+               if (trdata!=null) {
 
-                   for (int i=0;i<mydata.get(0).getResult().size();i++){
+                   if (d == 0) {
+                       List<String> bb = new ArrayList<>();
 
-                          bb.add(mydata.get(0).getResult().get(i).getTitle());
-                          bb.add("Time: "+mydata.get(0).getResult().get(i).getDate());
-                          bb.add("Magnitude: "+mydata.get(0).getResult().get(i).getMag());
-                          bb.add("");
+                       for (int i = 0; i < trdata.get(0).getResult().size(); i++) {
+
+                           bb.add(trdata.get(0).getResult().get(i).getTitle());
+                           bb.add("Time: " + trdata.get(0).getResult().get(i).getDate());
+                           bb.add("Magnitude: " + trdata.get(0).getResult().get(i).getMag());
+                           bb.add("");
+                       }
+                       String[] aa = new String[bb.size()];
+                       bb.toArray(aa);
+                       final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                       builder.setTitle("Occurrence : " + trdata.get(0).getResult().size());
+                       builder.setCancelable(true).setPositiveButton("close", new DialogInterface.OnClickListener() {
+                           @Override
+                           public void onClick(DialogInterface dialogInterface, int i) {
+                               dialogInterface.dismiss();
+                           }
+                       });
+                       builder.setItems(aa, new DialogInterface.OnClickListener() {
+                           @Override
+                           public void onClick(DialogInterface dialogInterface, int i) {
+
+                           }
+                       });
+                       AlertDialog alert = builder.create();
+                       alert.show();
+                   } else if (d == 1) {
+                       List<String> bb = new ArrayList<>();
+
+                       for (int i = 0; i < trdata.get(1).getResult().size(); i++) {
+
+                           bb.add(trdata.get(1).getResult().get(i).getTitle());
+                           bb.add("Time: " + trdata.get(1).getResult().get(i).getDate());
+                           bb.add("Magnitude: " + trdata.get(1).getResult().get(i).getMag());
+                           bb.add("");
+                       }
+                       String[] aa = new String[bb.size()];
+                       bb.toArray(aa);
+                       final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                       builder.setTitle("Occurrence : " + trdata.get(1).getResult().size());
+                       builder.setCancelable(true).setPositiveButton("close", new DialogInterface.OnClickListener() {
+                           @Override
+                           public void onClick(DialogInterface dialogInterface, int i) {
+                               dialogInterface.dismiss();
+                           }
+                       });
+                       builder.setItems(aa, new DialogInterface.OnClickListener() {
+                           @Override
+                           public void onClick(DialogInterface dialogInterface, int i) {
+
+                           }
+                       });
+                       AlertDialog alert = builder.create();
+                       alert.show();
+                   } else if (d == 2) {
+                       List<String> bb = new ArrayList<>();
+
+                       for (int i = 0; i < trdata.get(2).getResult().size(); i++) {
+
+                           bb.add(trdata.get(2).getResult().get(i).getTitle());
+                           bb.add("Time: " + trdata.get(2).getResult().get(i).getDate());
+                           bb.add("Magnitude: " + trdata.get(2).getResult().get(i).getMag());
+                           bb.add("");
+                       }
+                       String[] aa = new String[bb.size()];
+                       bb.toArray(aa);
+                       final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                       builder.setTitle("Occurrence : " + trdata.get(2).getResult().size());
+                       builder.setCancelable(true).setPositiveButton("close", new DialogInterface.OnClickListener() {
+                           @Override
+                           public void onClick(DialogInterface dialogInterface, int i) {
+                               dialogInterface.dismiss();
+                           }
+                       });
+                       builder.setItems(aa, new DialogInterface.OnClickListener() {
+                           @Override
+                           public void onClick(DialogInterface dialogInterface, int i) {
+
+                           }
+                       });
+                       AlertDialog alert = builder.create();
+                       alert.show();
+                   } else if (d == 3) {
+                       List<String> bb = new ArrayList<>();
+
+                       for (int i = 0; i < trdata.get(3).getResult().size(); i++) {
+
+                           bb.add(trdata.get(3).getResult().get(i).getTitle());
+                           bb.add("Time: " + trdata.get(3).getResult().get(i).getDate());
+                           bb.add("Magnitude: " + trdata.get(3).getResult().get(i).getMag());
+                           bb.add("");
+                       }
+                       String[] aa = new String[bb.size()];
+                       bb.toArray(aa);
+                       final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                       builder.setTitle("Occurrence : " + trdata.get(3).getResult().size());
+                       builder.setCancelable(true).setPositiveButton("close", new DialogInterface.OnClickListener() {
+                           @Override
+                           public void onClick(DialogInterface dialogInterface, int i) {
+                               dialogInterface.dismiss();
+                           }
+                       });
+                       builder.setItems(aa, new DialogInterface.OnClickListener() {
+                           @Override
+                           public void onClick(DialogInterface dialogInterface, int i) {
+
+                           }
+                       });
+                       AlertDialog alert = builder.create();
+                       alert.show();
+                   } else if (d == 4) {
+                       List<String> bb = new ArrayList<>();
+
+                       for (int i = 0; i < trdata.get(4).getResult().size(); i++) {
+
+                           bb.add(trdata.get(4).getResult().get(i).getTitle());
+                           bb.add("Time: " + trdata.get(4).getResult().get(i).getDate());
+                           bb.add("Magnitude: " + trdata.get(4).getResult().get(i).getMag());
+                           bb.add("");
+                       }
+                       String[] aa = new String[bb.size()];
+                       bb.toArray(aa);
+                       final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                       builder.setTitle("Occurrence : " + trdata.get(4).getResult().size());
+                       builder.setCancelable(true).setPositiveButton("close", new DialogInterface.OnClickListener() {
+                           @Override
+                           public void onClick(DialogInterface dialogInterface, int i) {
+                               dialogInterface.dismiss();
+                           }
+                       });
+                       builder.setItems(aa, new DialogInterface.OnClickListener() {
+                           @Override
+                           public void onClick(DialogInterface dialogInterface, int i) {
+
+                           }
+                       });
+                       AlertDialog alert = builder.create();
+                       alert.show();
+                   } else if (d == 5) {
+                       List<String> bb = new ArrayList<>();
+
+                       for (int i = 0; i < trdata.get(5).getResult().size(); i++) {
+
+                           bb.add(trdata.get(5).getResult().get(i).getTitle());
+                           bb.add("Time: " + trdata.get(5).getResult().get(i).getDate());
+                           bb.add("Magnitude: " + trdata.get(5).getResult().get(i).getMag());
+                           bb.add("");
+                       }
+                       String[] aa = new String[bb.size()];
+                       bb.toArray(aa);
+                       final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                       builder.setTitle("Occurrence : " + trdata.get(5).getResult().size());
+                       builder.setCancelable(true).setPositiveButton("close", new DialogInterface.OnClickListener() {
+                           @Override
+                           public void onClick(DialogInterface dialogInterface, int i) {
+                               dialogInterface.dismiss();
+                           }
+                       });
+                       builder.setItems(aa, new DialogInterface.OnClickListener() {
+                           @Override
+                           public void onClick(DialogInterface dialogInterface, int i) {
+
+                           }
+                       });
+                       AlertDialog alert = builder.create();
+                       alert.show();
+                   } else if (d == 6) {
+                       List<String> bb = new ArrayList<>();
+
+                       for (int i = 0; i < trdata.get(6).getResult().size(); i++) {
+
+                           bb.add(trdata.get(6).getResult().get(i).getTitle());
+                           bb.add("Time: " + trdata.get(6).getResult().get(i).getDate());
+                           bb.add("Magnitude: " + trdata.get(6).getResult().get(i).getMag());
+                           bb.add("");
+                       }
+                       String[] aa = new String[bb.size()];
+                       bb.toArray(aa);
+                       final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                       builder.setTitle("Occurrence : " + trdata.get(6).getResult().size());
+                       builder.setCancelable(true).setPositiveButton("close", new DialogInterface.OnClickListener() {
+                           @Override
+                           public void onClick(DialogInterface dialogInterface, int i) {
+                               dialogInterface.dismiss();
+                           }
+                       });
+                       builder.setItems(aa, new DialogInterface.OnClickListener() {
+                           @Override
+                           public void onClick(DialogInterface dialogInterface, int i) {
+
+                           }
+                       });
+                       AlertDialog alert = builder.create();
+                       alert.show();
                    }
-                   String[] aa = new String[bb.size()];
-                   bb.toArray(aa);
-                   final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-                   builder.setTitle("Occurrence : "+mydata.get(0).getResult().size());
-                   builder.setCancelable(true).setPositiveButton("close", new DialogInterface.OnClickListener() {
-                       @Override
-                       public void onClick(DialogInterface dialogInterface, int i) {
-                           dialogInterface.dismiss();
+
+               } else if (worlddata!=null){
+
+
+                   if (d == 0) {
+                       List<String> bb = new ArrayList<>();
+
+                       for (int i = 0; i < worlddata.get(0).getFeatures().size(); i++) {
+
+                           bb.add(worlddata.get(0).getFeatures().get(i).getProperties().getTitle());
+                           bb.add("Time: " + getDate( worlddata.get(0).getFeatures().get(i).getProperties().getTime() ));
+                           bb.add("Magnitude: " + worlddata.get(0).getFeatures().get(i).getProperties().getMag());
+                           bb.add("");
                        }
-                   });
-                   builder.setItems(aa, new DialogInterface.OnClickListener() {
-                       @Override
-                       public void onClick(DialogInterface dialogInterface, int i) {
+                       String[] aa = new String[bb.size()];
+                       bb.toArray(aa);
+                       final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                       builder.setTitle("Occurrence : " + worlddata.get(0).getFeatures().size());
+                       builder.setCancelable(true).setPositiveButton("close", new DialogInterface.OnClickListener() {
+                           @Override
+                           public void onClick(DialogInterface dialogInterface, int i) {
+                               dialogInterface.dismiss();
+                           }
+                       });
+                       builder.setItems(aa, new DialogInterface.OnClickListener() {
+                           @Override
+                           public void onClick(DialogInterface dialogInterface, int i) {
 
+                           }
+                       });
+                       AlertDialog alert = builder.create();
+                       alert.show();
+                   }else if (d==1){
+                       List<String> bb = new ArrayList<>();
+
+                       for (int i = 0; i < worlddata.get(1).getFeatures().size(); i++) {
+
+                           bb.add(worlddata.get(1).getFeatures().get(i).getProperties().getTitle());
+                           bb.add("Time: " + getDate( worlddata.get(1).getFeatures().get(i).getProperties().getTime() ));
+                           bb.add("Magnitude: " + worlddata.get(1).getFeatures().get(i).getProperties().getMag());
+                           bb.add("");
                        }
-                   });
-                   AlertDialog alert = builder.create();
-                   alert.show();
-               }else if (d==1){
-                    List<String> bb=new ArrayList<>();
+                       String[] aa = new String[bb.size()];
+                       bb.toArray(aa);
+                       final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                       builder.setTitle("Occurrence : " + worlddata.get(1).getFeatures().size());
+                       builder.setCancelable(true).setPositiveButton("close", new DialogInterface.OnClickListener() {
+                           @Override
+                           public void onClick(DialogInterface dialogInterface, int i) {
+                               dialogInterface.dismiss();
+                           }
+                       });
+                       builder.setItems(aa, new DialogInterface.OnClickListener() {
+                           @Override
+                           public void onClick(DialogInterface dialogInterface, int i) {
 
-                    for (int i=0;i<mydata.get(1).getResult().size();i++){
+                           }
+                       });
+                       AlertDialog alert = builder.create();
+                       alert.show();
+                   } else if (d==2){
+                       List<String> bb = new ArrayList<>();
 
-                        bb.add(mydata.get(1).getResult().get(i).getTitle());
-                        bb.add("Time: "+mydata.get(1).getResult().get(i).getDate());
-                        bb.add("Magnitude: "+mydata.get(1).getResult().get(i).getMag());
-                        bb.add("");
-                    }
-                    String[] aa = new String[bb.size()];
-                    bb.toArray(aa);
-                    final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-                    builder.setTitle("Occurrence : "+mydata.get(1).getResult().size());
-                    builder.setCancelable(true).setPositiveButton("close", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-                            dialogInterface.dismiss();
-                        }
-                    });
-                    builder.setItems(aa, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
+                       for (int i = 0; i < worlddata.get(2).getFeatures().size(); i++) {
 
-                        }
-                    });
-                    AlertDialog alert = builder.create();
-                    alert.show();
-                }else if (d==2){
-                    List<String> bb=new ArrayList<>();
+                           bb.add(worlddata.get(2).getFeatures().get(i).getProperties().getTitle());
+                           bb.add("Time: " + getDate( worlddata.get(2).getFeatures().get(i).getProperties().getTime() ));
+                           bb.add("Magnitude: " + worlddata.get(2).getFeatures().get(i).getProperties().getMag());
+                           bb.add("");
+                       }
+                       String[] aa = new String[bb.size()];
+                       bb.toArray(aa);
+                       final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                       builder.setTitle("Occurrence : " + worlddata.get(2).getFeatures().size());
+                       builder.setCancelable(true).setPositiveButton("close", new DialogInterface.OnClickListener() {
+                           @Override
+                           public void onClick(DialogInterface dialogInterface, int i) {
+                               dialogInterface.dismiss();
+                           }
+                       });
+                       builder.setItems(aa, new DialogInterface.OnClickListener() {
+                           @Override
+                           public void onClick(DialogInterface dialogInterface, int i) {
 
-                    for (int i=0;i<mydata.get(2).getResult().size();i++){
+                           }
+                       });
+                       AlertDialog alert = builder.create();
+                       alert.show();
+                   }else if (d==3){
+                       List<String> bb = new ArrayList<>();
 
-                        bb.add(mydata.get(2).getResult().get(i).getTitle());
-                        bb.add("Time: "+mydata.get(2).getResult().get(i).getDate());
-                        bb.add("Magnitude: "+mydata.get(2).getResult().get(i).getMag());
-                        bb.add("");
-                    }
-                    String[] aa = new String[bb.size()];
-                    bb.toArray(aa);
-                    final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-                    builder.setTitle("Occurrence : "+mydata.get(2).getResult().size());
-                    builder.setCancelable(true).setPositiveButton("close", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-                            dialogInterface.dismiss();
-                        }
-                    });
-                    builder.setItems(aa, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
+                       for (int i = 0; i < worlddata.get(3).getFeatures().size(); i++) {
 
-                        }
-                    });
-                    AlertDialog alert = builder.create();
-                    alert.show();
-                }else if (d==3){
-                    List<String> bb=new ArrayList<>();
+                           bb.add(worlddata.get(3).getFeatures().get(i).getProperties().getTitle());
+                           bb.add("Time: " + getDate( worlddata.get(3).getFeatures().get(i).getProperties().getTime() ));
+                           bb.add("Magnitude: " + worlddata.get(3).getFeatures().get(i).getProperties().getMag());
+                           bb.add("");
+                       }
+                       String[] aa = new String[bb.size()];
+                       bb.toArray(aa);
+                       final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                       builder.setTitle("Occurrence : " + worlddata.get(3).getFeatures().size());
+                       builder.setCancelable(true).setPositiveButton("close", new DialogInterface.OnClickListener() {
+                           @Override
+                           public void onClick(DialogInterface dialogInterface, int i) {
+                               dialogInterface.dismiss();
+                           }
+                       });
+                       builder.setItems(aa, new DialogInterface.OnClickListener() {
+                           @Override
+                           public void onClick(DialogInterface dialogInterface, int i) {
 
-                    for (int i=0;i<mydata.get(3).getResult().size();i++){
+                           }
+                       });
+                       AlertDialog alert = builder.create();
+                       alert.show();
+                   }else if (d==4){
+                       List<String> bb = new ArrayList<>();
 
-                        bb.add(mydata.get(3).getResult().get(i).getTitle());
-                        bb.add("Time: "+mydata.get(3).getResult().get(i).getDate());
-                        bb.add("Magnitude: "+mydata.get(3).getResult().get(i).getMag());
-                        bb.add("");
-                    }
-                    String[] aa = new String[bb.size()];
-                    bb.toArray(aa);
-                    final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-                    builder.setTitle("Occurrence : "+mydata.get(3).getResult().size());
-                    builder.setCancelable(true).setPositiveButton("close", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-                            dialogInterface.dismiss();
-                        }
-                    });
-                    builder.setItems(aa, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
+                       for (int i = 0; i < worlddata.get(4).getFeatures().size(); i++) {
 
-                        }
-                    });
-                    AlertDialog alert = builder.create();
-                    alert.show();
-                }else if (d==4){
-                    List<String> bb=new ArrayList<>();
+                           bb.add(worlddata.get(4).getFeatures().get(i).getProperties().getTitle());
+                           bb.add("Time: " + getDate( worlddata.get(4).getFeatures().get(i).getProperties().getTime() ));
+                           bb.add("Magnitude: " + worlddata.get(4).getFeatures().get(i).getProperties().getMag());
+                           bb.add("");
+                       }
+                       String[] aa = new String[bb.size()];
+                       bb.toArray(aa);
+                       final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                       builder.setTitle("Occurrence : " + worlddata.get(4).getFeatures().size());
+                       builder.setCancelable(true).setPositiveButton("close", new DialogInterface.OnClickListener() {
+                           @Override
+                           public void onClick(DialogInterface dialogInterface, int i) {
+                               dialogInterface.dismiss();
+                           }
+                       });
+                       builder.setItems(aa, new DialogInterface.OnClickListener() {
+                           @Override
+                           public void onClick(DialogInterface dialogInterface, int i) {
 
-                    for (int i=0;i<mydata.get(4).getResult().size();i++){
+                           }
+                       });
+                       AlertDialog alert = builder.create();
+                       alert.show();
+                   } else  if (d==5){
+                       List<String> bb = new ArrayList<>();
 
-                        bb.add(mydata.get(4).getResult().get(i).getTitle());
-                        bb.add("Time: "+mydata.get(4).getResult().get(i).getDate());
-                        bb.add("Magnitude: "+mydata.get(4).getResult().get(i).getMag());
-                        bb.add("");
-                    }
-                    String[] aa = new String[bb.size()];
-                    bb.toArray(aa);
-                    final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-                    builder.setTitle("Occurrence : "+mydata.get(4).getResult().size());
-                    builder.setCancelable(true).setPositiveButton("close", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-                            dialogInterface.dismiss();
-                        }
-                    });
-                    builder.setItems(aa, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
+                       for (int i = 0; i < worlddata.get(5).getFeatures().size(); i++) {
 
-                        }
-                    });
-                    AlertDialog alert = builder.create();
-                    alert.show();
-                }else if (d==5){
-                    List<String> bb=new ArrayList<>();
+                           bb.add(worlddata.get(5).getFeatures().get(i).getProperties().getTitle());
+                           bb.add("Time: " + getDate( worlddata.get(5).getFeatures().get(i).getProperties().getTime() ));
+                           bb.add("Magnitude: " + worlddata.get(5).getFeatures().get(i).getProperties().getMag());
+                           bb.add("");
+                       }
+                       String[] aa = new String[bb.size()];
+                       bb.toArray(aa);
+                       final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                       builder.setTitle("Occurrence : " + worlddata.get(5).getFeatures().size());
+                       builder.setCancelable(true).setPositiveButton("close", new DialogInterface.OnClickListener() {
+                           @Override
+                           public void onClick(DialogInterface dialogInterface, int i) {
+                               dialogInterface.dismiss();
+                           }
+                       });
+                       builder.setItems(aa, new DialogInterface.OnClickListener() {
+                           @Override
+                           public void onClick(DialogInterface dialogInterface, int i) {
 
-                    for (int i=0;i<mydata.get(5).getResult().size();i++){
+                           }
+                       });
+                       AlertDialog alert = builder.create();
+                       alert.show();
+                   }else if (d==6){
+                       List<String> bb = new ArrayList<>();
 
-                        bb.add(mydata.get(5).getResult().get(i).getTitle());
-                        bb.add("Time: "+mydata.get(5).getResult().get(i).getDate());
-                        bb.add("Magnitude: "+mydata.get(5).getResult().get(i).getMag());
-                        bb.add("");
-                    }
-                    String[] aa = new String[bb.size()];
-                    bb.toArray(aa);
-                    final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-                    builder.setTitle("Occurrence : "+mydata.get(5).getResult().size());
-                    builder.setCancelable(true).setPositiveButton("close", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-                            dialogInterface.dismiss();
-                        }
-                    });
-                    builder.setItems(aa, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
+                       for (int i = 0; i < worlddata.get(6).getFeatures().size(); i++) {
 
-                        }
-                    });
-                    AlertDialog alert = builder.create();
-                    alert.show();
-                }else if (d==6){
-                    List<String> bb=new ArrayList<>();
+                           bb.add(worlddata.get(6).getFeatures().get(i).getProperties().getTitle());
+                           bb.add("Time: " + getDate( worlddata.get(6).getFeatures().get(i).getProperties().getTime() ));
+                           bb.add("Magnitude: " + worlddata.get(6).getFeatures().get(i).getProperties().getMag());
+                           bb.add("");
+                       }
+                       String[] aa = new String[bb.size()];
+                       bb.toArray(aa);
+                       final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                       builder.setTitle("Occurrence : " + worlddata.get(6).getFeatures().size());
+                       builder.setCancelable(true).setPositiveButton("close", new DialogInterface.OnClickListener() {
+                           @Override
+                           public void onClick(DialogInterface dialogInterface, int i) {
+                               dialogInterface.dismiss();
+                           }
+                       });
+                       builder.setItems(aa, new DialogInterface.OnClickListener() {
+                           @Override
+                           public void onClick(DialogInterface dialogInterface, int i) {
 
-                    for (int i=0;i<mydata.get(6).getResult().size();i++){
+                           }
+                       });
+                       AlertDialog alert = builder.create();
+                       alert.show();
+                   }
 
-                        bb.add(mydata.get(6).getResult().get(i).getTitle());
-                        bb.add("Time: "+mydata.get(6).getResult().get(i).getDate());
-                        bb.add("Magnitude: "+mydata.get(6).getResult().get(i).getMag());
-                        bb.add("");
-                    }
-                    String[] aa = new String[bb.size()];
-                    bb.toArray(aa);
-                    final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-                    builder.setTitle("Occurrence : "+mydata.get(6).getResult().size());
-                    builder.setCancelable(true).setPositiveButton("close", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-                            dialogInterface.dismiss();
-                        }
-                    });
-                    builder.setItems(aa, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-
-                        }
-                    });
-                    AlertDialog alert = builder.create();
-                    alert.show();
-                }
-
-
+               }
 
 
 
@@ -348,15 +556,38 @@ public class GalleryFragment extends Fragment {
     }
     private void add(){
         data.clear();
-        data.add(new Data(days.get(0),mydata.get(0).getResult().size()));
-        data.add(new Data(days.get(1),mydata.get(1).getResult().size()));
-        data.add(new Data(days.get(2),mydata.get(2).getResult().size()));
-        data.add(new Data(days.get(3),mydata.get(3).getResult().size()));
-        data.add(new Data(days.get(4),mydata.get(4).getResult().size()));
-        data.add(new Data(days.get(5),mydata.get(5).getResult().size()));
-        data.add(new Data(days.get(6),mydata.get(6).getResult().size()));
+
+        if (trdata!=null) {
+            data.add(new Data(days.get(0), trdata.get(0).getResult().size()));
+            data.add(new Data(days.get(1), trdata.get(1).getResult().size()));
+            data.add(new Data(days.get(2), trdata.get(2).getResult().size()));
+            data.add(new Data(days.get(3), trdata.get(3).getResult().size()));
+            data.add(new Data(days.get(4), trdata.get(4).getResult().size()));
+            data.add(new Data(days.get(5), trdata.get(5).getResult().size()));
+            data.add(new Data(days.get(6), trdata.get(6).getResult().size()));
+        }
+else if (worlddata!=null){
+            data.add(new Data(days.get(0), worlddata.get(0).getFeatures().size() ));
+            data.add(new Data(days.get(1), worlddata.get(1).getFeatures().size() ));
+            data.add(new Data(days.get(2), worlddata.get(2).getFeatures().size() ));
+            data.add(new Data(days.get(3), worlddata.get(3).getFeatures().size() ));
+            data.add(new Data(days.get(4), worlddata.get(4).getFeatures().size() ));
+            data.add(new Data(days.get(5), worlddata.get(5).getFeatures().size() ));
+            data.add(new Data(days.get(6), worlddata.get(6).getFeatures().size() ));
+
+
+        }
+
+
+
 
     }
+    private String getDate(String time) {
 
+
+        SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd '  ' HH:mm:ss z");
+        Date date = new Date(Long.parseLong(time));
+        return sf.format(date);
+    }
 
 }

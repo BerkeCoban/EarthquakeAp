@@ -19,6 +19,12 @@ import com.bumptech.glide.request.RequestOptions;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.navigation.NavigationView;
+import com.huawei.hms.location.FusedLocationProviderClient;
+import com.huawei.hms.location.LocationCallback;
+import com.huawei.hms.location.LocationRequest;
+import com.huawei.hms.location.LocationResult;
+import com.huawei.hms.location.LocationServices;
+import com.huawei.hms.location.SettingsClient;
 
 import androidx.annotation.NonNull;
 import androidx.navigation.NavController;
@@ -45,13 +51,20 @@ public class NavigationLeftActivity extends AppCompatActivity {
     int snackValue=0;
      int msgValue=0;
 
-     public static String mail;
+
+    private FusedLocationProviderClient fusedLocationProviderClient;
+    private LocationRequest mLocationRequest;
+    private SettingsClient settingsClient;
+    private LocationCallback mLocationCallback;
+    private Location location;
 
 
 
-     String familyname;
-    String name;
-    String url;
+
+
+   public static String familyname;
+   public static String name;
+   public static String url;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,22 +75,7 @@ public class NavigationLeftActivity extends AppCompatActivity {
         FloatingActionButton fab = findViewById(R.id.fab);
 
 
-        if (savedInstanceState == null) {
-            Bundle extras = getIntent().getExtras();
-            if(extras == null) {
-                familyname= null;
-                name= null;
-                url= null;
-            } else {
-                url= extras.getString("uri");
-                name= extras.getString("name");
-                familyname= extras.getString("familyname");
-            }
-        } else {
-           // newString= (String) savedInstanceState.getSerializable("STRING_I_NEED");
-           // newString= (String) savedInstanceState.getSerializable("STRING_I_NEED");
-           // newString= (String) savedInstanceState.getSerializable("STRING_I_NEED");
-        }
+
 
 
 
@@ -166,7 +164,7 @@ public class NavigationLeftActivity extends AppCompatActivity {
 
 
 
-        //  username.setText("berke.coba@gmail.com");
+
 
 
 
